@@ -1,0 +1,11 @@
+[package]
+name = "tenspr-kerpiler"
+version = "0.1.0"
+edition = "2021"
+description = "kernel compiler for sparse tensor computation"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+auto_impl = "1.1.0"
+smallvec = "1.11.0"

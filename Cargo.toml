@@ -1,0 +1,2 @@
+[workspace]
+members = ["tenspr-kerpiler", "tenspr-backend"]
