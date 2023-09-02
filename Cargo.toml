@@ -1,2 +1,2 @@
 [workspace]
-members = ["tenspr-kerpiler", "tenspr-backend"]
+members = ["tenspr-kerpiler", "tenspr-llvm"]

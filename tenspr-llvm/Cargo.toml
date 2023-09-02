@@ -1,15 +1,12 @@
 [package]
-name = "tenspr-kerpiler"
+name = "tenspr-llvm"
 version = "0.1.0"
 edition = "2021"
-description = "kernel compiler for sparse tensor computation"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-auto_impl = "1.1.0"
 hex = "0.4.3"
-sha2 = "0.10.7"
-sha2-derive = "0.1.2"
-smallvec = "1.11.0"
+inkwell = { version = "0.2.0", features = ["llvm14-0"] }
+kerpiler = { path = "../tenspr-kerpiler", package = "tenspr-kerpiler"}
 typed-arena = "2.0.2"
