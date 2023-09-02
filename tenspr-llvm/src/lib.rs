@@ -63,7 +63,7 @@ impl<'llvm> LLVMFunctionBuilder<'llvm> {
         // + for every two binded values, one of them should be available in the block correspondent to another
         use kerpiler::Expr::*;
         match expr {
-            Bind(i, _t) => {
+            Extern(i, _t) => {
                 let Holder { value, block } = self.binds[&i];
                 let bid = |bb: BasicBlock<'llvm>| -> usize {
                     bb.get_name().to_str().unwrap()[1..].parse::<usize>().unwrap()
@@ -80,6 +80,7 @@ impl<'llvm> LLVMFunctionBuilder<'llvm> {
             Tuple(x, y, _t) => {
                 let x = self.build(x.clone(), from);
                 let y = self.build(y.clone(), x.block);
+                self.llvm_builder.position_at_end(y.block);
                 let tz = self.llvm_context.struct_type(&[x.value.get_type(), y.value.get_type()], false);
                 let pz = self.llvm_builder.build_alloca(tz, &self.name());
                 let vz = self.llvm_builder.build_load(pz, &self.name()).into_struct_value();
@@ -90,28 +91,31 @@ impl<'llvm> LLVMFunctionBuilder<'llvm> {
             ProjL(x, _t) => {
                 let x = self.build(x.clone(), from);
                 let vx = x.value.into_struct_value();
+                self.llvm_builder.position_at_end(x.block);
                 let value = self.llvm_builder.build_extract_value(vx, 0, &self.name()).unwrap();
                 Holder { value, block: x.block }
             },
             ProjR(x, _t) => {
                 let x = self.build(x.clone(), from);
                 let vx = x.value.into_struct_value();
+                self.llvm_builder.position_at_end(x.block);
                 let value = self.llvm_builder.build_extract_value(vx, 1, &self.name()).unwrap();
                 Holder { value, block: x.block }
             },
             Index(arr, idx, _t) => {
                 let arr = self.build(arr.clone(), from);
                 let idx = self.build(idx.clone(), arr.block);
+                self.llvm_builder.position_at_end(arr.block);
                 let value = self.llvm_builder.build_extract_element(arr.value.into_vector_value(), idx.value.into_int_value(), &self.name());
                 Holder { value, block: idx.block }
             },
-            PForGather(ndrange, map, gather, _t) => {
-                unimplemented!("parallelization is not supported yet")
+            PForGather(ndrng, map, gather, _t) => {
+                unimplemented!("parallel computing is not supported yet")
             },
-            IForGather(ndrange, map, gather, _t) => {
+            IForGather(ndrng, map, gather, _t) => {
                 todo!()
             },
-            IForReduce(ndrange, initial, reduce, _t) => {
+            IForReduce(ndrng, init, reduce, _t) => {
                 todo!()
             },
             Uni(operator, expr, _t) => {
