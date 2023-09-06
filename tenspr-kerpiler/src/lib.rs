@@ -1,7 +1,6 @@
 mod range;
 pub use range::*;
-mod stream_ir;
-pub use stream_ir::*;
+pub mod graph_ir;
 mod optimizer;
 pub use optimizer::*;
 
